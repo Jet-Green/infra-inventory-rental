@@ -18,6 +18,17 @@ git pull --ff-only --recurse-submodules || { echo "[$DATE] git pull failed" | te
 echo "[$DATE] 🔄 Updating submodules to latest remote..." | tee -a "$LOG_FILE"
 git submodule update --init --recursive --remote || { echo "[$DATE] submodule update failed" | tee -a "$LOG_FILE"; exit 1; }
 
+# 2.1 Проверка, что сабмодули реально присутствуют как каталоги
+if [[ ! -d "frontend" || ! -d "backend" ]]; then
+  echo "[$DATE] ❌ Submodules directories not found (frontend/backend)." | tee -a "$LOG_FILE"
+  echo "[$DATE]    Это значит, что в infra-репозитории сабмодули не добавлены как gitlink (одного .gitmodules недостаточно)." | tee -a "$LOG_FILE"
+  echo "[$DATE]    Исправление (один раз, в infra-репо):" | tee -a "$LOG_FILE"
+  echo "[$DATE]      git submodule add https://github.com/Jet-Green/inventory-rental frontend" | tee -a "$LOG_FILE"
+  echo "[$DATE]      git submodule add https://github.com/Jet-Green/inventory-rental-backend.git backend" | tee -a "$LOG_FILE"
+  echo "[$DATE]      git commit -m \"chore: add submodules\" && git push" | tee -a "$LOG_FILE"
+  exit 1
+fi
+
 # 3. Показываем статус (для логов и отладки)
 echo "[$DATE] 📊 Submodules status after update:" | tee -a "$LOG_FILE"
 git submodule status | tee -a "$LOG_FILE"

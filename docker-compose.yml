@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: inventory-rental-frontend
+    restart: always
+    ports:
+      - "3068:3000"
+    env_file:
+      - .env.frontend
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "3000"
+    depends_on:
+      - backend
+    networks:
+      - web
+
+  backend:
+    build: ./backend
+    container_name: inventory-rental-backend
+    restart: always
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.backend
+    depends_on:
+      - mongo
+    networks:
+      - web
+      - db
+
+  mongo:
+    image: mongo:7
+    container_name: inventory-rental-mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - db
+
+volumes:
+  mongo_data:
+
+networks:
+  web:
+  db:

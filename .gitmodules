@@ -1,0 +1,7 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Jet-Green/inventory-rental.git
+
+[submodule "backend"]
+	path = backend
+	url = https://github.com/Jet-Green/inventory-rental-backend.git
